@@ -1,17 +1,57 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useFormState, useFormStatus } from 'react-dom'
+import { createTemplate } from '@/actions/createTemplate'
+
+const initialState = {
+    success: false,
+    error: null,
+    message: null
+}
+
+function SubmitButton() {
+    const { pending } = useFormStatus()
+
+    return (
+       <button
+        type="submit"
+        disabled={pending}
+        className='inline-flex items-center justify-center gap-2.5 text-center font-medium hover:bg-opacity-90 bg-green text-white px-10 py-3.5 lg:px-8 xl:px-10 disabled:opacity-50'
+    >
+        {pending ? 'Creating...' : 'Create'}
+    </button>
+    )
+}
 
 const CreateNewTemplate = () => {
-
     const [isPaid, setIsPaid] = useState<boolean>(false);
     const [isVisible, setIsVisible] = useState<boolean>(false);
+    const router = useRouter()
+    // const { toast } = useToast()
 
+    const [state, formAction] = useFormState(createTemplate, initialState)
+
+    useEffect(() => {
+        if (state.success) {
+            // toast({
+            //     title: "Success",
+            //     description: "Template created successfully",
+            // })
+            router.push('/templates')
+        }
+    }, [state.success, router])
 
     return (
         <>
             <div className="rounded-[10px] border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card">
-                <form action="">
+                <form action={formAction}>
+                    {state.error && (
+                        <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                            {state.error}
+                        </div>
+                    )}
                     <div className="grid md:grid-cols-2 grid-cols-1 gap-5.5 p-6.5 ">
                         <div>
                             <label className="mb-3 block text-body-sm font-medium text-dark dark:text-white">
@@ -32,7 +72,7 @@ const CreateNewTemplate = () => {
                             <input
                                 type="text"
                                 placeholder="Enter author name"
-                                name='name'
+                                name='author'
                                 className="w-full rounded-[7px] border-[1.5px] border-stroke bg-transparent px-5.5 py-3 text-dark outline-none transition focus:border-green active:border-green disabled:cursor-default disabled:bg-gray-2 dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-green"
                             />
                         </div>
@@ -51,10 +91,10 @@ const CreateNewTemplate = () => {
                                     <input
                                         type="checkbox"
                                         id="isVisible"
+                                        name="isVisible"
                                         className="sr-only"
-                                        onChange={() => {
-                                            setIsVisible(!isVisible);
-                                        }}
+                                        checked={isVisible}
+                                        onChange={() => setIsVisible(!isVisible)}
                                     />
                                     {/* Toggle Background */}
                                     <div
@@ -84,10 +124,10 @@ const CreateNewTemplate = () => {
                                     <input
                                         type="checkbox"
                                         id="isPaid"
+                                        name="isPaid"
                                         className="sr-only"
-                                        onChange={() => {
-                                            setIsPaid(!isPaid);
-                                        }}
+                                        checked={isPaid}
+                                        onChange={() => setIsPaid(!isPaid)}
                                     />
                                     {/* Toggle Background */}
                                     <div
@@ -108,9 +148,7 @@ const CreateNewTemplate = () => {
 
                     <div className='grid grid-cols-1 gap-5.5 p-6.5'>
                         <div className='w-full'>
-                            <button className='inline-flex items-center justify-center gap-2.5 text-center font-medium hover:bg-opacity-90  bg-green text-white  px-10 py-3.5 lg:px-8 xl:px-10'>
-                                Create
-                            </button>
+                            <SubmitButton />
                         </div>
                     </div>
 
@@ -121,3 +159,4 @@ const CreateNewTemplate = () => {
 }
 
 export default CreateNewTemplate
+

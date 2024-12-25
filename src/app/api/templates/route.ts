@@ -19,21 +19,3 @@ export async function GET() {
         return NextResponse.json({ error: 'Failed to fetch templates' }, { status: 500 });
     }
 }
-
-export async function POST(request: Request) {
-    try {
-        const body = await request.json();
-        const templatesCollection = collection(db, 'templates');
-
-        // Add the new template to Firestore
-        const docRef = await addDoc(templatesCollection, body);
-
-        console.log("New template added with ID: ", docRef.id);
-
-        // Return the new template's ID
-        return NextResponse.json({ id: docRef.id, ...body }, { status: 201 });
-    } catch (error) {
-        console.error('Error creating template:', error);
-        return NextResponse.json({ error: 'Failed to create template' }, { status: 500 });
-    }
-}

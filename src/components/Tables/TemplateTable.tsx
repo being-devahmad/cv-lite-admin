@@ -17,6 +17,7 @@ const TemplateTable = () => {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    
 
     useEffect(() => {
         const fetchTemplates = async () => {
@@ -99,7 +100,7 @@ const TemplateTable = () => {
                 <div className="flex justify-between items-center">
                     <ButtonDefault
                         label="Create Template"
-                        link="/"
+                        link="/templates/create"
                         customClasses="bg-green text-white py-[11px] px-6"
                     >
                         <PlusCircle className="h-4 w-4" />

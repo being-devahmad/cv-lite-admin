@@ -28,9 +28,9 @@ const Table: React.FC<TableProps> = ({ data, columns }) => {
                   {column.header}
                 </th>
               ))}
-              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
+              {/* <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
                 Actions
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -46,7 +46,7 @@ const Table: React.FC<TableProps> = ({ data, columns }) => {
                     {column.render ? column.render(item) : item[column.key]}
                   </td>
                 ))}
-                <td
+                {/* <td
                   className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5 ${
                     index === data.length - 1 ? "border-b-0" : "border-b"
                   }`}
@@ -151,7 +151,8 @@ const Table: React.FC<TableProps> = ({ data, columns }) => {
                       </svg>
                     </button>
                   </div>
-                </td>
+
+                </td> */}
               </tr>
             ))}
           </tbody>

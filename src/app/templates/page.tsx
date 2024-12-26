@@ -2,7 +2,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import TemplateTable from "@/components/Tables/TemplateTable";
 
-const Users = () => {
+const Templates = () => {
     return (
         <DefaultLayout>
             <Breadcrumb pageName="Templates" />
@@ -14,4 +14,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Templates;

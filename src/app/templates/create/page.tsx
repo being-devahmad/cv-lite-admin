@@ -1,5 +1,3 @@
-
-
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import DefaultLayout from '@/components/Layouts/DefaultLaout'
 import CreateNewTemplate from '@/components/Templates/CreateTemplate'

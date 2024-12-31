@@ -1,9 +1,7 @@
-
-import ECommerce from "@/components/Dashboard/E-commerce";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
-import TableThree from "@/components/Tables/UserTable";
 import React from "react";
+import UserTable from "@/components/Tables/UserTable";
 
 export const metadata: Metadata = {
   title:
@@ -11,15 +9,15 @@ export const metadata: Metadata = {
   description: "This is Next.js Home page for NextAdmin Dashboard Kit",
 };
 
-export default function Home(data:any) {
- 
-  console.log("meiw",data)
-  
+export default function Home(data: any) {
+
+  console.log("meiw", data)
+
   return (
     <>
       <DefaultLayout>
-        <ECommerce />
-        <TableThree />
+        {/* {/* <ECommerce /> */}
+        <UserTable />
       </DefaultLayout>
     </>
   );

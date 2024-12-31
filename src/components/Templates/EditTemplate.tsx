@@ -62,7 +62,6 @@ const EditTemplate: React.FC<EditTemplateProps> = ({ id }) => {
     useEffect(() => {
         if (state.success) {
             router.push('/templates')
-            // fetchTemplateData() // Fetch updated data after successful update
         }
     }, [state.success])
 

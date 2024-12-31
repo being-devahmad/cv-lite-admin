@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import GoogleSigninButton from "../GoogleSigninButton";
 import SigninWithPassword from "../SigninWithPassword";
+import CreateAdmin from "../CreateAdmin";
 
 export default function Signin() {
   return (
@@ -19,6 +20,7 @@ export default function Signin() {
 
       <div>
         <SigninWithPassword />
+        {/* <CreateAdmin/> */}
       </div>
 
       <div className="mt-6 text-center">

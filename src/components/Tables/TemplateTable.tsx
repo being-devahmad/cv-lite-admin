@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { Check, PlusCircle, X } from 'lucide-react';
 import Table from "./Table";
-import ButtonDefault from "../Buttons/ButtonDefault";
 import { useRouter } from "next/navigation";
+import { deleteTemplate } from "@/actions/deleteTemplate";
+import Link from "next/link";
 
 interface Template {
     id: string;
@@ -18,6 +19,9 @@ const TemplateTable = () => {
     const [templates, setTemplates] = useState<Template[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const router = useRouter()
 
     const handleNavigateToTemplateDetails = (id: string) => {
@@ -26,6 +30,26 @@ const TemplateTable = () => {
 
     const handleNavigateToTemplateEdit = (id: string) => {
         router.push(`/templates/${id}/edit`)
+    }
+
+    const handleDeleteClick = (id: string) => {
+        setTemplateToDelete(id);
+        setShowDeleteConfirmation(true);
+    }
+
+    const handleConfirmDelete = async () => {
+        if (templateToDelete) {
+            const result = await deleteTemplate(templateToDelete)
+            if (result.success) {
+                setTemplates(templates.filter(template => template.id !== templateToDelete))
+                setShowDeleteConfirmation(false)
+                setShowSuccessAlert(true)
+                setTimeout(() => setShowSuccessAlert(false), 5000) // Hide alert after 5 seconds
+            } else {
+                setError(result.message)
+            }
+            setTemplateToDelete(null)
+        }
     }
 
     useEffect(() => {
@@ -91,13 +115,11 @@ const TemplateTable = () => {
                 </span>
             ),
         },
-
         {
             key: 'actions',
             header: "Actions",
             render: (template: Template) => (
                 <div className="flex items-center space-x-3.5">
-                    {/* View button */}
                     <button className="hover:text-primary" aria-label="View item"
                         onClick={() => handleNavigateToTemplateDetails(template.id)}>
                         <svg
@@ -123,7 +145,6 @@ const TemplateTable = () => {
                         </svg>
                     </button>
 
-                    {/* Edit button */}
                     <button className="hover:text-primary" aria-label="Edit item"
                         onClick={() => handleNavigateToTemplateEdit(template.id)}>
                         <svg
@@ -145,8 +166,7 @@ const TemplateTable = () => {
                         </svg>
                     </button>
 
-                    {/* Delete Button */}
-                    <button className="hover:text-primary" aria-label="Delete item">
+                    <button className="hover:text-primary" aria-label="Delete item" onClick={() => handleDeleteClick(template.id)}>
                         <svg
                             className="fill-current"
                             width="20"
@@ -195,7 +215,6 @@ const TemplateTable = () => {
                 </div>
             )
         }
-
     ];
 
     if (isLoading) {
@@ -203,27 +222,89 @@ const TemplateTable = () => {
     }
 
     if (error) {
-        return <div className="text-center py-4 text-red-500">{error}</div>;
+        return (
+            <div className="fixed bottom-4 right-4 flex w-full max-w-sm rounded-[10px] border-l-6 border-red-500 bg-red-100 px-7 py-8 dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+                <div className="mr-5.5 mt-[5px] flex h-8 w-full max-w-8 items-center justify-center rounded-md bg-red-500">
+                    <svg className="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM7 11.4L3.6 8L5 6.6L7 8.6L11 4.6L12.4 6L7 11.4Z" fill="white" />
+                    </svg>
+                </div>
+                <div className="w-full">
+                    <h5 className="mb-2 font-bold leading-[22px] text-[#B45454] dark:text-[#E12D39]">
+                        Error
+                    </h5>
+                    <p className="text-[#CD5D5D]">
+                        {error}
+                    </p>
+                </div>
+            </div>
+        );
     }
 
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold tracking-tight">Templates</h2>
-                <div className="flex justify-between items-center">
-                    <ButtonDefault
-                        label="Create Template"
-                        link="/templates/create"
-                        customClasses="bg-green text-white py-[11px] px-6"
-                    >
-                        <PlusCircle className="h-4 w-4" />
-                    </ButtonDefault>
-                </div>
+                <Link href="/templates/create" className="inline-flex items-center justify-center gap-2.5 text-center font-medium hover:bg-opacity-90 bg-green text-white py-[11px] px-6">
+                    Create Template
+                </Link>
             </div>
 
             <Table data={templates} columns={columns} />
+
+            {showDeleteConfirmation && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg">
+                        <h3 className="text-lg font-bold mb-4">Confirm Delete</h3>
+                        <p>Are you sure you want to delete this template?</p>
+                        <div className="mt-4 flex justify-end space-x-2">
+                            <button
+                                onClick={() => setShowDeleteConfirmation(false)}
+                                className="px-4 py-2 bg-gray-200 rounded-md"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmDelete}
+                                className="px-4 py-2 bg-red-500 text-white rounded-md"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showSuccessAlert && (
+                <div className="fixed bottom-4 right-4 flex w-full max-w-sm rounded-[10px] border-l-6 border-green bg-green-light-7 px-7 py-8 dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+                    <div className="mr-5.5 mt-[5px] flex h-8 w-full max-w-8 items-center justify-center rounded-md bg-green">
+                        <svg
+                            width="16"
+                            height="12"
+                            viewBox="0 0 16 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                                fill="white"
+                                stroke="white"
+                            />
+                        </svg>
+                    </div>
+                    <div className="w-full">
+                        <h5 className="mb-2 font-bold leading-[22px] text-[#004434] dark:text-[#34D399]">
+                            Template Deleted Successfully
+                        </h5>
+                        <p className="text-[#637381]">
+                            The template has been successfully deleted from the system.
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default TemplateTable;
+

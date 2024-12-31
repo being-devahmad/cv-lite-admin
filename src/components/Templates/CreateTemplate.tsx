@@ -35,7 +35,6 @@ const CreateNewTemplate = () => {
 
     useEffect(() => {
         if (state.success) {
-            
             // toast({
             //     title: "Success",
             //     description: "Template created successfully",
@@ -44,10 +43,18 @@ const CreateNewTemplate = () => {
         }
     }, [state.success, router])
 
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget)
+        formData.set('isVisible', isVisible.toString())
+        formData.set('isPaid', isPaid.toString())
+        formAction(formData)
+    }
+
     return (
         <>
             <div className="rounded-[10px] border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card">
-                <form action={formAction}>
+                <form onSubmit={handleSubmit}>
                     {state.error && (
                         <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
                             {state.error}
@@ -85,31 +92,17 @@ const CreateNewTemplate = () => {
                                 htmlFor="isVisible"
                                 className="flex items-center cursor-pointer space-x-3"
                             >
+                                <input
+                                    type="checkbox"
+                                    id="isVisible"
+                                    name="isVisible"
+                                    checked={isVisible}
+                                    onChange={() => setIsVisible(!isVisible)}
+                                    className="form-checkbox h-5 w-5 text-green-500 rounded border-gray-300 focus:ring-green-500 dark:border-gray-600 dark:bg-dark-2 dark:ring-offset-gray-800"
+                                />
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Visibility Status
                                 </span>
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        id="isVisible"
-                                        name="isVisible"
-                                        className="sr-only"
-                                        checked={isVisible}
-                                        onChange={() => setIsVisible(!isVisible)}
-                                    />
-                                    {/* Toggle Background */}
-                                    <div
-                                        className={`block w-14 h-8 rounded-full transition ${isVisible
-                                            ? "bg-primary dark:bg-blue-500"
-                                            : "bg-gray-300 dark:bg-[#5A616B]"
-                                            }`}
-                                    ></div>
-                                    {/* Toggle Knob */}
-                                    <div
-                                        className={`absolute top-1 left-1 h-6 w-6 bg-white rounded-full shadow transition-transform transform ${isVisible ? "translate-x-6" : ""
-                                            }`}
-                                    ></div>
-                                </div>
                             </label>
                         </div>
 
@@ -118,31 +111,17 @@ const CreateNewTemplate = () => {
                                 htmlFor="isPaid"
                                 className="flex items-center cursor-pointer space-x-3"
                             >
+                                <input
+                                    type="checkbox"
+                                    id="isPaid"
+                                    name="isPaid"
+                                    checked={isPaid}
+                                    onChange={() => setIsPaid(!isPaid)}
+                                    className="form-checkbox h-5 w-5 text-green-500 rounded border-gray-300 focus:ring-green-500 dark:border-gray-600 dark:bg-dark-2 dark:ring-offset-gray-800"
+                                />
                                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Paid Status
                                 </span>
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        id="isPaid"
-                                        name="isPaid"
-                                        className="sr-only"
-                                        checked={isPaid}
-                                        onChange={() => setIsPaid(!isPaid)}
-                                    />
-                                    {/* Toggle Background */}
-                                    <div
-                                        className={`block w-14 h-8 rounded-full transition ${isPaid
-                                            ? "bg-primary dark:bg-blue-500"
-                                            : "bg-gray-300 dark:bg-[#5A616B]"
-                                            }`}
-                                    ></div>
-                                    {/* Toggle Knob */}
-                                    <div
-                                        className={`absolute top-1 left-1 h-6 w-6 bg-white rounded-full shadow transition-transform transform ${isPaid ? "translate-x-6" : ""
-                                            }`}
-                                    ></div>
-                                </div>
                             </label>
                         </div>
                     </div>

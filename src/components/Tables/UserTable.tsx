@@ -31,7 +31,9 @@ const UserTable = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-
+  const handleNavigateToUserDetails = (id: string) => {
+    router.push(`/users/${id}`)
+}
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -123,7 +125,8 @@ const UserTable = () => {
       header: "Actions",
       render: (user: User) => (
         <div className="flex items-center justify-end space-x-3.5">
-          <button className="hover:text-primary" aria-label="View item">
+          <button className="hover:text-primary" aria-label="View item"
+           onClick={() => handleNavigateToUserDetails(user.id)}>
             <svg
               className="fill-current"
               width="20"

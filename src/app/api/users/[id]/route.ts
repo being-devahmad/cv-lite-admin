@@ -27,7 +27,7 @@ export async function GET(req: Request, { params }: Params) {
       ...userSnapshot.data(),
     };
 
-    console.log('User data:', userData);
+    // console.log('User data:', userData);
 
     return NextResponse.json(userData);
   } catch (error) {

@@ -4,26 +4,32 @@ import { db } from '@/lib/firebase';
 
 interface Params {
   params: {
-    userId: string; // User ID to filter resumes
+    id: string; // User ID to filter resumes
   };
 }
 
 // Fetch resumes by User ID (GET)
 export async function GET(req: Request, { params }: Params) {
-  const { userId } = params; // Extracting the user ID from the request params
-  if (!userId) {
+  const { id } = params; // Extracting the user ID from the request params
+  console.log("userId is -->",id)
+  if (!id) {
+    console.error('User ID is missing');
     return NextResponse.json(
       { error: 'User ID is required' },
       { status: 400 }
     );
   }
+
   try {
     const resumesCollection = collection(db, 'resumes'); // Reference to the resumes collection
-    const q = query(resumesCollection, where('userId', '==', userId)); // Query to filter resumes by userId
-    console.log("testing2:",q)
+    const q = query(resumesCollection, where('userId', '==', id)); // Query to filter resumes by id
+
+    console.log("Query constructed:", q);
+
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
+      console.warn(`No resumes found for user ID: ${id}`);
       return NextResponse.json(
         { error: 'No resumes found for this user' },
         { status: 404 }
@@ -35,7 +41,7 @@ export async function GET(req: Request, { params }: Params) {
       ...doc.data(),
     }));
 
-    console.log('Resumes:', resumes);
+    console.log('Resumes fetched:', resumes);
 
     return NextResponse.json(resumes);
   } catch (error) {

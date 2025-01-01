@@ -11,7 +11,7 @@ export async function GET() {
             ...doc.data()
         }));
 
-        console.log("users-->", users)
+        // console.log("users-->", users)
 
         return NextResponse.json(users);
     } catch (error) {

@@ -4,13 +4,6 @@ import React, { useEffect } from 'react'
 import { useFormState, useFormStatus } from 'react-dom'
 import { useRouter } from 'next/navigation'
 import { signinAction } from '@/actions/auth'
-// import { useForm } from 'react-hook-form'
-// import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from '@/lib/validation'
-import { z } from 'zod'
-
-// type LoginFormData = z.infer<typeof LoginSchema>;
-
 
 function SubmitButton() {
   const { pending } = useFormStatus()
@@ -33,7 +26,7 @@ export default function SigninWithPassword() {
   useEffect(() => {
     if (state?.success) {
       console.log('Signin successful, redirecting to dashboard')
-      router.push('/dashboard')
+      router.push('/')
     }
   }, [state?.success, router])
 

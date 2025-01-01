@@ -6,6 +6,7 @@ import { PlusCircle } from "lucide-react";
 import Table from "./Table";
 import ButtonDefault from "../Buttons/ButtonDefault";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -25,9 +26,11 @@ interface User {
 }
 
 const UserTable = () => {
+   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -50,6 +53,31 @@ const UserTable = () => {
     fetchUsers();
   }, []);
 
+  // Delete a user by ID
+  const deleteUser = async (id: string) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/users/${id}`, {
+        method: "DELETE", // Specify the DELETE HTTP method
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete user");
+      }
+
+      const data = await response.json();
+      console.log("Delete response:", data);
+
+      // Update the list of users after deletion
+      setUsers((prevUsers) => prevUsers.filter((user: any) => user.id !== id));
+      showNotification()
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Failed to delete user. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const columns = [
     {
       key: "user",
@@ -141,7 +169,11 @@ const UserTable = () => {
               />
             </svg>
           </Link>
-          <button className="hover:text-primary" aria-label="Delete item">
+          <button
+            onClick={() => deleteUser(user?.id)}
+            className="hover:text-primary"
+            aria-label="Delete item"
+          >
             <svg
               className="fill-current"
               width="20"
@@ -191,7 +223,14 @@ const UserTable = () => {
       ),
     },
   ];
-
+  const showNotification = () => {
+    setIsVisible(true); // Notification show karein
+    setTimeout(() => {
+      setIsVisible(false); // 3 seconds baad hide karein
+      // router.push("/users");
+    }, 3000);
+    
+  };
   if (isLoading) {
     return <div className="py-4 text-center">Loading users...</div>;
   }
@@ -201,22 +240,52 @@ const UserTable = () => {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-end justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Users</h2>
-        <div className="flex items-center justify-between">
-          <ButtonDefault
-            label="Create User"
-            link="/users/create"
-            customClasses="bg-green text-white py-[11px] px-6"
-          >
-            <PlusCircle className="h-4 w-4" />
-          </ButtonDefault>
+    <>
+      {isVisible && (
+        <div className="flex w-full rounded-[10px] border-l-6 border-green bg-green-light-7 px-7 py-8 dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+          <div className="mr-5.5 mt-[5px] flex h-8 w-full max-w-8 items-center justify-center rounded-md bg-green">
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                fill="white"
+                stroke="white"
+              />
+            </svg>
+          </div>
+          <div className="w-full">
+            <h5 className="mb-2 font-bold leading-[22px] text-[#004434] dark:text-[#34D399]">
+              User Deleted Successfully
+            </h5>
+            <p className="text-[#637381]">
+              Congratulations! User Has Been Deleted Successfully.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
-      <Table data={users} columns={columns} />
-    </div>
+      <div className="space-y-4">
+        <div className="flex items-end justify-between">
+          <h2 className="text-2xl font-bold tracking-tight">Users</h2>
+          <div className="flex items-center justify-between">
+            <ButtonDefault
+              label="Create User"
+              link="/users/create"
+              customClasses="bg-green text-white py-[11px] px-6"
+            >
+              <PlusCircle className="h-4 w-4" />
+            </ButtonDefault>
+          </div>
+        </div>
+
+        <Table data={users} columns={columns} />
+      </div>
+    </>
   );
 };
 

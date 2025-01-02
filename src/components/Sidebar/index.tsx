@@ -127,7 +127,7 @@ const menuGroups = [
             </svg>
           ),
           label: "Settings",
-          route: "/settings",
+          route: "/pages/settings",
           // children: [
           //   { label: "Form Elements", route: "/forms/form-elements" },
           //   { label: "Form Layout", route: "/forms/form-layout" },

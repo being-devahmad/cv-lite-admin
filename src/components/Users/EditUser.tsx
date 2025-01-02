@@ -61,6 +61,7 @@ const EditNewUser = () => {
             throw new Error("Failed to fetch user data");
           }
           const data = await response.json();
+          console.log("user->" , user)
           setUser(data);
         } catch (err) {
           console.error("Error fetching user:", err);

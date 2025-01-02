@@ -25,10 +25,7 @@ const Table: React.FC<TableProps> = ({ data, columns }) => {
                                     {column.header}
                                 </th>
                             ))}
-<<<<<<< HEAD
                           
-=======
->>>>>>> 3bf9fad76e9d17e71eeb3d52aa63850790445725
                         </tr>
                     </thead>
                     <tbody>
@@ -43,10 +40,7 @@ const Table: React.FC<TableProps> = ({ data, columns }) => {
                                         {column.render ? column.render(item) : item[column.key]}
                                     </td>
                                 ))}
-<<<<<<< HEAD
                                
-=======
->>>>>>> 3bf9fad76e9d17e71eeb3d52aa63850790445725
                             </tr>
                         ))}
                     </tbody>

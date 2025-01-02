@@ -14,8 +14,8 @@ const DropdownUser = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("auth--------------->", auth);
-      console.log("currentUser-->", currentUser);
+      // console.log("auth--------------->", auth);
+      // console.log("currentUser-->", currentUser);
       setUser(currentUser);
       if (initializing) setInitializing(false);
     });

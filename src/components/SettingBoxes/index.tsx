@@ -1,8 +1,25 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 const SettingBoxes = () => {
+
+  const [user, setUser] = useState<User | null>(null);
+  const [initializing, setInitializing] = useState(true)
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("auth-->", auth);
+      console.log("currentUser-->", currentUser);
+      setUser(currentUser);
+      if (initializing) setInitializing(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <>
       <div className="grid grid-cols-5 gap-8">
@@ -172,8 +189,6 @@ const SettingBoxes = () => {
                       type="email"
                       name="emailAddress"
                       id="emailAddress"
-                      placeholder="devidjond45@gmail.com"
-                      defaultValue="devidjond45@gmail.com"
                     />
                   </div>
                 </div>

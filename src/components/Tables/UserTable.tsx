@@ -7,33 +7,34 @@ import Table from "./Table";
 import ButtonDefault from "../Buttons/ButtonDefault";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { Users } from "@/types/user";
 
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-  address: string;
-  avatar: string;
-  city: string;
-  country: string;
-  email: string;
-  createdAt: string;
-  postalCode: string;
-  role: string;
-  phone: string;
-  name: string;
-}
+
 
 const UserTable = () => {
-   const router = useRouter();
-  const [users, setUsers] = useState<User[]>([]);
+  const router = useRouter();
+  const [users, setUsers] = useState<Users[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [initializing, setInitializing] = useState(true)
+
   const handleNavigateToUserDetails = (id: string) => {
     router.push(`/users/${id}`)
-}
+  }
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser: any) => {
+      setUser(currentUser);
+      if (initializing) setInitializing(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -43,7 +44,11 @@ const UserTable = () => {
           throw new Error("Failed to fetch users");
         }
         const data = await response.json();
-        setUsers(data);
+        console.log("data->", data)
+        console.log("currentUser->", user)
+        // Filter out the current user
+        const filteredUsers = data.filter((u: Users) => u.id !== user?.uid);
+        setUsers(filteredUsers);
       } catch (error) {
         console.error("Error:", error);
         setError("Failed to load users. Please try again later.");
@@ -52,15 +57,17 @@ const UserTable = () => {
       }
     };
 
-    fetchUsers();
-  }, []);
+    if (user) {
+      fetchUsers();
+    }
+  }, [user]);
 
   // Delete a user by ID
   const deleteUser = async (id: string) => {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/users/${id}`, {
-        method: "DELETE", // Specify the DELETE HTTP method
+        method: "DELETE",
       });
 
       if (!response.ok) {
@@ -73,6 +80,7 @@ const UserTable = () => {
       // Update the list of users after deletion
       setUsers((prevUsers) => prevUsers.filter((user: any) => user.id !== id));
       showNotification()
+
     } catch (error) {
       console.error("Error:", error);
       setError("Failed to delete user. Please try again later.");
@@ -84,7 +92,7 @@ const UserTable = () => {
     {
       key: "user",
       header: "User",
-      render: (user: User) => (
+      render: (user: Users) => (
         <div className="flex items-center">
           <div className="mr-3 flex-shrink-0">
             <Image
@@ -114,7 +122,7 @@ const UserTable = () => {
     {
       key: "location",
       header: "Location",
-      render: (user: User) => (
+      render: (user: Users) => (
         <p className="text-dark dark:text-white">
           {user.city && user.country ? `${user.city}, ${user.country}` : "N/A"}
         </p>
@@ -123,10 +131,10 @@ const UserTable = () => {
     {
       key: "actions",
       header: "Actions",
-      render: (user: User) => (
+      render: (user: Users) => (
         <div className="flex items-center justify-end space-x-3.5">
           <button className="hover:text-primary" aria-label="View item"
-           onClick={() => handleNavigateToUserDetails(user.id)}>
+            onClick={() => handleNavigateToUserDetails(user.id)}>
             <svg
               className="fill-current"
               width="20"
@@ -232,7 +240,7 @@ const UserTable = () => {
       setIsVisible(false); // 3 seconds baad hide karein
       // router.push("/users");
     }, 3000);
-    
+
   };
   if (isLoading) {
     return <div className="py-4 text-center">Loading users...</div>;

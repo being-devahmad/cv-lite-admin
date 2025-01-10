@@ -23,7 +23,7 @@ const ViewTemplate: React.FC<ViewTemplateProps> = ({ id }) => {
 
     useEffect(() => {
         fetchTemplateData()
-    }, [id])
+    }, [id ])
 
     if (!template) {
         return <div className="text-center p-6">Loading...</div>

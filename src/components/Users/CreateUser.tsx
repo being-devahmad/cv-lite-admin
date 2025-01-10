@@ -4,12 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFormState, useFormStatus } from "react-dom";
 import { createUser } from "@/actions/createUser";
-import SelectGroupOne from "../FormElements/SelectGroup/SelectGroupOne";
 
 const initialState = {
   success: false,
-  error: null,
-  message: null,
+  error: '',
+  message: undefined,
 };
 
 function SubmitButton() {
@@ -50,7 +49,7 @@ const CreateNewUser = () => {
       showNotification();
       
     }
-  }, [state.success, router]);
+  }, [state.success, router , showNotification]);
 
   return (
     <>

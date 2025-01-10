@@ -8,7 +8,7 @@ import { createTemplate } from '@/actions/createTemplate'
 const initialState = {
     success: false,
     error: '',
-    message: null
+    message: undefined
 }
 
 function SubmitButton() {

@@ -37,7 +37,7 @@ export async function updateUser(userId: string, formData: FormData) {
       console.log("User updated successfully.");
       return { success: true, message: 'User updated successfully' };
     } catch (error) {
-      console.error('Error updating user:', error.message, error.stack);
+      console.error('Error updating user:', error);
       return { success: false, error: 'Failed to update user' };
     }
   }

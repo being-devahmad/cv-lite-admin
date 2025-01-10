@@ -7,8 +7,8 @@ import { updateUser } from "@/actions/updateUser";
 
 const initialState = {
   success: false,
-  error: null,
-  message: null,
+  error: '',
+  message: undefined
 };
 
 interface User {
@@ -49,7 +49,7 @@ const EditNewUser = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
   
-    const [state, formAction] = useFormState(updateUser, id);
+    const [_, formAction] = useFormState((state: any, formData: FormData) => updateUser(id as string, formData), initialState);
   
     // Fetch user data by ID
     useEffect(() => {
@@ -72,25 +72,25 @@ const EditNewUser = () => {
       };
   
       fetchUser();
-    }, [id]);
+    }, [id , user]);
   
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
   
       const formData = new FormData(e.target as HTMLFormElement);
-      formData.append("userId", id);  // Append the userId to FormData
+      formData.append("userId", String(id));  // Convert id to a string before appending
   
       formAction(formData);  // Submit the form data including the userId
     };
   
     // Redirect to the user list after successful update
     useEffect(() => {
-      if (state.success) {
+      if (_.success) {
         setTimeout(() => {
           router.push("/users");
         }, 2000);
       }
-    }, [state.success, router]);
+    }, [_.success, router]);
   
     // Handle input changes
     const handleChange = (
@@ -107,7 +107,7 @@ const EditNewUser = () => {
   
     return (
       <>
-        {state.success && (
+        {_.success && (
           <div className="flex w-full rounded-[10px] border-l-6 border-green bg-green-light-7 px-7 py-8 dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
             <h5 className="mb-2 font-bold leading-[22px] text-[#004434] dark:text-[#34D399]">
               User Updated Successfully
@@ -119,12 +119,12 @@ const EditNewUser = () => {
         )}
         <div className="rounded-[10px] border border-stroke bg-white shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card">
           <form onSubmit={handleSubmit}>
-            {state.error && (
+            {_.error && (
               <div
                 className="mb-4 rounded-lg bg-red-100 p-4 text-sm text-red-700 dark:bg-red-200 dark:text-red-800"
                 role="alert"
               >
-                {state.error}
+                {_.error}
               </div>
             )}
             <div className="grid grid-cols-1 gap-5.5 p-6.5 md:grid-cols-2">

@@ -9,7 +9,7 @@ import { updateTemplate } from '@/actions/updateTemplate'
 const initialState = {
     success: false,
     error: '',
-    message: null
+    message: undefined
 }
 
 function SubmitButton() {
@@ -57,13 +57,13 @@ const EditTemplate: React.FC<EditTemplateProps> = ({ id }) => {
 
     useEffect(() => {
         fetchTemplateData()
-    }, [id])
+    }, [id ])
 
     useEffect(() => {
         if (state.success) {
             router.push('/templates')
         }
-    }, [state.success])
+    }, [state.success , router])
 
     return (
         <>

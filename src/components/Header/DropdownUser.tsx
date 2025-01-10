@@ -21,7 +21,7 @@ const DropdownUser = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [initializing]);
 
   const handleSignOut = async () => {
     try {

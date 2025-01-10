@@ -33,7 +33,7 @@ const UserTable = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [initializing]);
 
   useEffect(() => {
     const fetchUsers = async () => {

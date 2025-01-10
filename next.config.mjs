@@ -27,6 +27,16 @@ const nextConfig = {
                 hostname: 'images.unsplash.com',
                 pathname: '**',
             },
+            {
+                protocol: "https",
+                hostname: "hebbkx1anhila5yf.public.blob.vercel-storage.com",
+                pathname: "**",
+            },
+            {
+                protocol: "https",
+                hostname: "img.freepik.com",
+                pathname: "**",
+            },
         ]
     }
 };

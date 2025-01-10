@@ -1,4 +1,5 @@
 import LayoutContent from "@/components/LayoutComponent";
+import { AuthProvider } from "@/context/AuthContext";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,12 +12,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
+
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <LayoutContent>
-          {children}
-        </LayoutContent>
+        <AuthProvider>
+          <LayoutContent>
+            {children}
+          </LayoutContent>
+        </AuthProvider>
       </body>
     </html>
   );

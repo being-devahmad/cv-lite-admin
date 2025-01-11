@@ -104,12 +104,12 @@ const TierTable = () => {
                     {tier.plans ? (
                         tier.plans.map((plan, index) => (
                             <div key={index} className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                {plan.type}: &#8364; {plan.price}
+                                &#8364; {plan.price}
                             </div>
                         ))
                     ) : (
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            &#8364; {tier.price || 'Free'}
+                            &#8364; {tier.price || '0'}
                         </span>
                     )}
                 </div>
@@ -200,7 +200,9 @@ const TierTable = () => {
                         </svg>
                     </button>
 
-                    <button className="hover:text-primary" aria-label="Delete item" onClick={() => handleDeleteClick(tier.id)}>
+                    <button className="hover:text-primary" aria-label="Delete item"
+                        onClick={() => handleDeleteClick(tier.id)}
+                    >
                         <svg
                             className="fill-current"
                             width="20"

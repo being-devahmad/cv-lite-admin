@@ -122,7 +122,7 @@ const TierTable = () => {
                 <ul className="text-sm text-gray-600 dark:text-gray-400">
                     {tier.plans ? tier.plans.map((planType) => {
                         return (
-                            <li>
+                            <li key={planType.type}>
                                 {planType.type}
                             </li>
                         )
